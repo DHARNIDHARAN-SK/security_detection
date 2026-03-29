@@ -7,7 +7,7 @@ from tensorflow.keras.models import load_model
 app = FastAPI()
 
 # Load everything once
-model = load_model("model_fixed.keras")
+model = load_model("model_fixed.h5")
 scaler = joblib.load("scaler.pkl")
 selector = joblib.load("selector.pkl")
 
