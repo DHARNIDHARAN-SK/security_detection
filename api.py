@@ -3,10 +3,20 @@ from pydantic import BaseModel
 import numpy as np
 import joblib
 from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import InputLayer
 
 app = FastAPI()
 
-model = load_model("model_fixed.h5", compile=False, safe_mode=False)
+# =========================
+# LOAD MODEL (FIXED)
+# =========================
+model = load_model(
+    "model_fixed.h5",
+    compile=False,
+    safe_mode=False,
+    custom_objects={"InputLayer": InputLayer}
+)
+
 scaler = joblib.load("scaler.pkl")
 selector = joblib.load("selector.pkl")
 
