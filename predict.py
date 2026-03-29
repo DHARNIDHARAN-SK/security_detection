@@ -1,6 +1,7 @@
 import numpy as np
 import joblib
 from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import InputLayer
 
 # =========================
 # CONFIG
@@ -13,26 +14,29 @@ THRESHOLD = 0.7
 INPUT_FEATURES = 40
 
 # =========================
-# LOAD
+# LOAD (FIXED)
 # =========================
-model = load_model(MODEL_PATH)
+model = load_model(
+    MODEL_PATH,
+    compile=False,
+    safe_mode=False,
+    custom_objects={"InputLayer": InputLayer}
+)
+
 scaler = joblib.load(SCALER_PATH)
 
 # =========================
 # SINGLE
 # =========================
 def predict_single(features):
-
     try:
         if len(features) != INPUT_FEATURES:
             raise ValueError(f"Expected {INPUT_FEATURES}, got {len(features)}")
 
         x = np.array(features, dtype=float).reshape(1, -1)
 
-        # scale
         x_scaled = scaler.transform(x)
 
-        # sequence
         x_seq = np.repeat(x_scaled[:, np.newaxis, :], SEQ_LEN, axis=1)
 
         prob = model.predict(x_seq, verbose=0)[0][0]
@@ -44,12 +48,10 @@ def predict_single(features):
     except Exception as e:
         return {"error": str(e)}
 
-
 # =========================
 # BATCH
 # =========================
 def predict_batch(X):
-
     try:
         X = np.array(X, dtype=float)
 
