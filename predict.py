@@ -5,7 +5,7 @@ from tensorflow.keras.models import load_model
 # =========================
 # CONFIG
 # =========================
-MODEL_PATH = "model_fixed.keras"
+MODEL_PATH = "model_fixed.h5"
 SCALER_PATH = "scaler.pkl"
 
 SEQ_LEN = 10
