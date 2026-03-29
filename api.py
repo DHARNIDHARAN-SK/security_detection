@@ -2,12 +2,12 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import numpy as np
 import joblib
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 
 app = FastAPI()
 
 # Load everything once
-model = load_model("model_fixed.keras")
+model = load_model("model_fixed.keras",compile=False)
 scaler = joblib.load("scaler.pkl")
 selector = joblib.load("selector.pkl")
 
