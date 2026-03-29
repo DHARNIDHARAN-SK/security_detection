@@ -2,17 +2,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import numpy as np
 import joblib
-import keras
-import sys
-
-# 🔧 Fix for Keras 3 deserialization issue
-sys.modules['keras.src.models.functional'] = keras.models
-
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 
 app = FastAPI()
 
-# Load everything once
 model = load_model("model_fixed.keras", compile=False)
 scaler = joblib.load("scaler.pkl")
 selector = joblib.load("selector.pkl")
@@ -21,7 +14,7 @@ SEQ_LEN = 10
 THRESHOLD = 0.4
 
 class InputData(BaseModel):
-    features: list  # 40 features
+    features: list
 
 @app.get("/")
 def home():
@@ -32,11 +25,9 @@ def predict(data: InputData):
     try:
         x = np.array(data.features).reshape(1, -1)
 
-        # scale + select
         x = scaler.transform(x)
         x = selector.transform(x)
 
-        # sequence
         x_seq = np.repeat(x[:, np.newaxis, :], SEQ_LEN, axis=1)
 
         prob = model.predict(x_seq)[0][0]
