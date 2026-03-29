@@ -2,12 +2,18 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import numpy as np
 import joblib
+import keras
+import sys
+
+# 🔧 Fix for Keras 3 deserialization issue
+sys.modules['keras.src.models.functional'] = keras.models
+
 from keras.models import load_model
 
 app = FastAPI()
 
 # Load everything once
-model = load_model("model_fixed.keras",compile=False)
+model = load_model("model_fixed.keras", compile=False)
 scaler = joblib.load("scaler.pkl")
 selector = joblib.load("selector.pkl")
 
